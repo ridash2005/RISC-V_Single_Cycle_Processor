@@ -106,7 +106,6 @@ additionals are
 
 ## What does the repository contain?
 
-You can expect four things which will be given for every modules;
 ### Verilog Code
 Design of the main modules of risc-v will be build with the logic to implement it in a very simpler way.
 ### Testbench
