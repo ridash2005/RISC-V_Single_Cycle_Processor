@@ -150,9 +150,8 @@ Characteristics:
 
 Non-memory instructions bypass this block.
 
-# ==========================================================
 # 8. Write-Back Logic
-# ==========================================================
+
 The write-back stage selects the final value written to the destination
 register. Possible write-back sources include:
 
@@ -198,9 +197,7 @@ extend, and experiment with the design for learning purposes.
 
 
 # Contact 
-
 Email    : rickaryadas@gmail.com 
-GitHub   : https://github.com/ridash2005 
-LinkedIn: https://linkedin.com/in/your-linkedin-id  
+ 
 
 
