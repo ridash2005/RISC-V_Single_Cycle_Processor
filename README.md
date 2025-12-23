@@ -1,118 +1,206 @@
-# RISC-V Single Cycle Processor Design
-
-In this repository of RISC-V, you will get to know the main modules of the MIPS Architecture with their codes, testbench and the design using the Verilog Language only. The purpose of this repository is to make an understable and easy-to-go code for the complex project i.e., RISC-V, where anyone with the basic knowledge on the Verilog can create. 
-
-## Software used
-Xilinx Vivado version 2024.1
-
-This is an industry level tool, which will produce the gate level design, schematic design and it can also implement the code in an FPGA kit by using bitstream generation.
-
-## What to expect
-The instruction I-type, B-type, S-type snd J-type have been proposed. 
-This repository will picture out the main idea on various main block of RISC-V along with the excecution of each module in Vivado.
 
 
-## Architecture Design
-
-![image](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/assets/152515939/a96949c0-6e89-426c-97c5-8d158f3afae8)
-
-## Instruction Set
-
-![image](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/assets/152515939/e5042813-b772-4bf1-a8a8-44d33539c6b8)
-
-## ALU Table
-
-![image](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/assets/152515939/9b26d4e0-50c2-43be-aef5-47effa00f8ff)
+### RISC-V Single-Cycle Processor (32 bit)
 
 
+## Overview
+
+This project implements a complete RISC-V single-cycle processor core
+using Register Transfer Level (RTL) design principles. The processor
+executes one full instruction per clock cycle, meaning that instruction
+fetch, decode, execute, memory access, and write-back all occur within
+a single rising clock edge.
+
+The design is intentionally non-pipelined to emphasize clarity of
+datapath behavior, control signal generation, and instruction-level
+hardware understanding. This architecture is widely used in academic
+contexts to introduce CPU design concepts before moving to pipelined
+or out-of-order processors.
+
+The processor follows the RV32I base integer instruction set and is
+implemented in synthesizable Verilog, suitable for simulation and FPGA
+synthesis.
 
 
-## what are the main blocks in this Single cycle processor?
-The RISC-V contains the four essential blocks,
-#### ‣ [Program Counter](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/tree/main/RISC-V%20Main%20Modules%20Designs/Program%20Counter)
-#### ‣ [Instruction Memory](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/tree/main/RISC-V%20Main%20Modules%20Designs/Instruction%20Memory)
-#### ‣ [Register File](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/tree/main/RISC-V%20Main%20Modules%20Designs/Register%20File)
-#### ‣ [Data Memory](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/tree/main/RISC-V%20Main%20Modules%20Designs/Data%20Memory)
-This four blocks are the key componenets of the processor. But, to bluid the whole architecture it is not enough, you need the connecting components for the above which plays a greater role in selecting the data, to ensure data is being read or written to. We need,
-#### ‣ Multiplexers - 3 are required
-- [**Multiplexer for PCSrc**](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/tree/main/RISC-V%20Main%20Modules%20Designs/Multiplexer%20for%20PCSrc)
-- [**Multiplexer for ALUSrc**](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/tree/main/RISC-V%20Main%20Modules%20Designs/Multiplexer%20for%20ALUSrc)
-- [**Multiplexer for ResultSrc**](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/blob/main/RISC-V%20Main%20Modules%20Designs/Multiplexer%20for%20ResultSrc/Design.v)
+# Design Philosophy
 
-The count is 3, for selecting their desired selection line which are PCSrc, ALUSrc, ResultSrc.
-#### ‣ Adders - 2 are required
-- [**Adder for PCPlus4**](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/tree/main/RISC-V%20Main%20Modules%20Designs/Adder%20for%20PCPlus4)
-- [**Adder for PCTarget**](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/tree/main/RISC-V%20Main%20Modules%20Designs/Adder%20for%20PCTarget)
-  
-The adder will increment the value. For PCPlus4 the previous input is added with four as an output to give the next input for program counter. And, for PCTarget the addition is between the ImmExt (output of Extend File) and PC input.
-#### ‣ [Arithmetic logic unit](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/tree/main/RISC-V%20Main%20Modules%20Designs/Arithmetic%20Logic%20Unit)
-#### ‣ [ALU Control unit](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/tree/main/RISC-V%20Main%20Modules%20Designs/ALU%20Control)
-ALU Control unit, comprises of the, 
-
-- [**Main Decoder**](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/tree/main/RISC-V%20Main%20Modules%20Designs/Main%20Decoder)
-- [**ALU Decoder**](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/tree/main/RISC-V%20Main%20Modules%20Designs/ALU%20Decoder)
-
-#### ‣ [Extend File](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/tree/main/RISC-V%20Main%20Modules%20Designs/Extend)
-#### ‣ [Datapath](https://github.com/EkthaReddy/RISC-V-Single-Cycle-Processor/tree/main/RISC-V%20Main%20Modules%20Designs/Data%20Path)
-
-All this combined together with the appropriate logic flow will give the architecture of MIPS.
+- Single-cycle execution for conceptual simplicity
+- Explicit datapath separation from control logic
+- Modular RTL structure for easy debugging and extension
+- Instruction-driven control (opcode-based decoding)
+- Clear mapping between RISC-V ISA semantics and hardware behavior
 
 
-**Here is the MIPS generated by using all the sub-modules mentioned above**
+# High-Level Architecture
 
-![Elaborated Design](https://github.com/user-attachments/assets/0292a6bb-dcc1-4124-8592-588b8f058b48)
+The processor is composed of the following major subsystems:
 
+1. Program Counter (PC) Logic
+2. Instruction Memory
+3. Control Unit
+4. Register File
+5. Immediate Generator
+6. Arithmetic Logic Unit (ALU)
+7. Data Memory
+8. Write-Back Selection Logic
+9. Next-PC Selection Logic
 
-## What datapath does the load word, store word, and Branch equal word follow
-
-### Load Word
-Step 1: The type of instruction used will determine the path for data to flow. To explain in simpler ways, the data will follow a path from the program counter at an initial address let's take 1000. It will give the instruction in machine code language after being fed into the instruction Memory.
-
-
-Step 2: The opcode and instruction used will excute path in a certain direction. To know which path to choose, the multiplexer is been placed.
-
-
-Step 3:The sourse register from instruction set is fed into the register file at source operand A1(for single source register) which now gives us SrcA. For SrcB, add the extend file which will convert the small bits to 32 bit wide.
-
-Note: If two single source register are used then both A1 and A2 source operand are used.
+All of these blocks operate concurrently within a single clock cycle.
 
 
-Step 4: The SrcA and SrcB will be computed in ALU Logice where it comprise of Main Decoder and ALU Decoder which are controlled by ALU Controller.
+# 1. Program Counter (PC) Subsystem
+
+The Program Counter holds the address of the currently executing
+instruction. On every clock edge, the PC is updated with the address
+of the next instruction.
+
+Possible PC update sources include:
+- PC + 4 (sequential execution)
+- Branch target address
+- Jump target address
+
+The PC update decision is controlled by branch and jump control signals
+generated by the control unit.
 
 
-Step 5: The ALUResult is fed into the Data memory and where the Result is added back to the Register File of WD3. RegWrite is added as a control signal to ALU Controller.
-Now, we need the next instruction to pass on, the adder is used which gives output as PCPlus4 which addes the previous input with four.
+# 2. Instruction Memory
+
+Instruction memory is a read-only memory block indexed by the PC.
+It outputs a 32-bit instruction corresponding to the current PC value.
+
+Key characteristics:
+- Asynchronous read behavior
+- Word-aligned access
+- No write capability during execution
+
+The instruction is immediately forwarded to the decode and control
+logic within the same cycle.
 
 
-### Store word
-Step 1: The whole structure of store word is almost same like the load word. 
-The changes to be made are 
-- Two single source register is used.
-- ImmSrc from from extend file and MemWrite from the Data memory as a control signal is supplied to the ALU Controller.
-- Second Register is fed into the A2 source operand.
+# 3. Instruction Decode and Control Unit
 
-### Branch Equal
+The control unit interprets the instruction opcode and generates all
+necessary control signals required to steer the datapath.
 
-Follow the same data path till store word.
-additionals are
+Control signals include:
+- Register write enable
+- ALU operation selection
+- ALU source selection (register vs immediate)
+- Memory read/write enables
+- Write-back source selection
+- Branch and jump control flags
 
-- Perform substraction operation on SrcA and SrcB, if the result gives us zero then add zero flag to show the results are obtained for beq instructions.
-- ResultSrc and RD is disabled.
-- Calcualte the Target Address 
-  PCTarget = PC input + ImmExt
-  the PCTarget is fed into the Program Counter by using multipler.
+This design uses a centralized control strategy where instruction
+fields directly influence datapath behavior.
 
 
+# 4. Register File
 
-## What does the repository contain?
+The register file consists of 32 general-purpose registers, each
+32 bits wide, compliant with the RV32I specification.
 
-### Verilog Code
-Design of the main modules of risc-v will be build with the logic to implement it in a very simpler way.
-### Testbench
-This will test the various case scenario of your main design of the particluar main module to ensure the correctness, range and fulfillment of every test cases given.
-### Simulation output
-The simulation will generate the waveform based on the test cases provided in testbench and also make ensure it is instatiating the suitable main design module in the testbench. It will check for errors in the main design and testbench, whether it be syntax, junk error, bit length error or logic flow error.
-### Elaborated Design
-After passing the simulation, if the code is meeting the expected ouput, it will show the elaborated design of the module created.
-### Implemented Design
-When the synthesis and implementation is successful in vivado, it will produce an implemented design which can are implementable.
+Features:
+- Two read ports (rs1, rs2)
+- One write port (rd)
+- Register x0 is hardwired to zero
+- Write occurs on the active clock edge
+
+The register file supplies operands to the ALU and accepts results
+during the write-back stage.
+
+# 5. Immediate Generator
+
+The immediate generator extracts and sign-extends immediate values
+from different instruction formats, including:
+
+- I-type (loads, arithmetic immediate)
+- S-type (stores)
+- B-type (branches)
+- J-type (jumps)
+- U-type (upper immediate)
+
+This unit ensures that all immediates are correctly aligned and
+extended to 32 bits before use by the ALU.
+
+
+# 6. Arithmetic Logic Unit (ALU)
+
+The ALU performs all arithmetic and logical computations required
+by the instruction set.
+
+Supported operations typically include:
+- Addition and subtraction
+- Logical AND, OR, XOR
+- Shift operations
+- Comparison for branch decisions
+
+The specific ALU operation is selected via ALU control signals derived
+from the instruction funct fields and opcode.
+
+
+# 7. Data Memory
+
+Data memory is used exclusively by load and store instructions.
+
+Characteristics:
+- Address provided by ALU output
+- Write data sourced from register file
+- Read data forwarded to write-back logic
+- Controlled by explicit memory enable signals
+
+Non-memory instructions bypass this block.
+
+# ==========================================================
+# 8. Write-Back Logic
+# ==========================================================
+The write-back stage selects the final value written to the destination
+register. Possible write-back sources include:
+
+- ALU computation result
+- Data memory read output
+- PC + 4 (for jump-and-link instructions)
+
+A multiplexer controlled by the control unit determines the correct
+write-back value.
+
+
+# 9. Next PC Selection Logic
+
+Next PC selection determines program flow. It chooses between:
+- Sequential execution (PC + 4)
+- Conditional branch target
+- Unconditional jump target
+
+Branch decisions are made using ALU comparison results combined with
+branch control signals.
+
+
+# Instruction Execution in a Single Cycle
+
+Within one clock cycle, the following operations occur in parallel:
+
+- Instruction fetch from instruction memory
+- Decode and control signal generation
+- Register operand read
+- ALU execution or address calculation
+- Data memory access (if required)
+- Write-back data selection
+- Next PC computation
+
+The clock period must be long enough to accommodate the slowest
+instruction path.
+
+
+# License
+
+This project is provided for educational use. Users are free to modify,
+extend, and experiment with the design for learning purposes.
+
+
+# Contact 
+
+Email    : rickaryadas@gmail.com 
+GitHub   : https://github.com/ridash2005 
+LinkedIn: https://linkedin.com/in/your-linkedin-id  
+
+
